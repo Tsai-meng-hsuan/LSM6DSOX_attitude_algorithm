@@ -1,6 +1,52 @@
 import serial
+import time
+import numpy as np
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
+
+
+# 定義旋轉矩陣：繞 x 軸旋轉
+def rotation_matrix_x(theta):
+    return np.array([
+        [1, 0, 0],
+        [0, np.cos(theta), -np.sin(theta)],
+        [0, np.sin(theta), np.cos(theta)]
+    ])
+
+# 定義旋轉矩陣：繞 y 軸旋轉
+def rotation_matrix_y(theta):
+    return np.array([
+        [np.cos(theta), 0, np.sin(theta)],
+        [0, 1, 0],
+        [-np.sin(theta), 0, np.cos(theta)]
+    ])
+
+# 定義旋轉矩陣：繞 z 軸旋轉
+def rotation_matrix_z(theta):
+    return np.array([
+        [np.cos(theta), -np.sin(theta), 0],
+        [np.sin(theta), np.cos(theta), 0],
+        [0, 0, 1]
+    ])
+
+# 定義向量
+v = np.array([1, 0, 0])  # 在 X 軸上的單位向量
+
+# 角度，單位為弧度
+theta_x = np.pi / 4  # 45度
+theta_y = np.pi / 6  # 30度
+theta_z = np.pi / 3  # 60度
+
+# 執行旋轉
+v_rotated_x = np.dot(rotation_matrix_x(theta_x), v)
+v_rotated_y = np.dot(rotation_matrix_y(theta_y), v)
+v_rotated_z = np.dot(rotation_matrix_z(theta_z), v)
+
+
+def calculate_vector(acc_x, acc_y, acc_z):
+
+    pass
+
 
 # 設置串口連接
 ser = serial.Serial('COM5', 9600, timeout=0.1)  # 這裡根據你的設備修改串口號
@@ -27,22 +73,33 @@ def update_arrow(acc_x, acc_y, acc_z):
     ax.set_ylabel('Y')
     ax.set_zlabel('Z')
     ax.quiver(0, 0, 0, acc_x, acc_y, acc_z, color='r', label='Acceleration Vector')
+    ax.quiver(0, 0, 0, acc_x, acc_y, acc_z, color='g', label='Acceleration Vector')
+    ax.quiver(0, 0, 0, acc_x, acc_y, acc_z, color='b', label='Acceleration Vector')
     plt.draw()
 
 plt.ion()
 plt.show()
 
-acc_x, acc_y, acc_z = [0,0,0]
+acc_x, acc_y, acc_z = [0,0,1]
+
+
+before_time = time.time()
 while True:
     # 清除串口緩衝區
     ser.flushInput()  # 清除輸入緩衝區
     # ser.flushOutput()  # 清除輸出緩衝區
     # 從串口讀取加速度數據
     line = ser.readline().decode(errors='ignore').strip()  # 讀取一行並解碼為字符串
-    
     try:
-        acc_x, acc_y, acc_z = list(map(float, line.split(',')))
-        # print(acc_x, acc_y, acc_z)
+        delta_acc_x, delta_acc_y, delta_acc_z = list(map(float, line.split(',')))
+        after_time = time.time()
+        delta_time = after_time - before_time
+        before_time = time.time()
+        # acc_x += delta_time*delta_acc_x
+        # acc_y += delta_time*delta_acc_y
+        acc_z += delta_time*delta_acc_z
+        print(acc_x, acc_y, acc_z)
+        
         # 更新箭頭
         update_arrow(acc_x, acc_y, acc_z)
         plt.pause(0.01)
