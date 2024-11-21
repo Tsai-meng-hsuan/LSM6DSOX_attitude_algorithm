@@ -41,18 +41,18 @@ def update_arrow(angle_x, angle_y, angle_z):
     ax.set_zlabel('Z')
 
     vector_x = np.array([[1],[0],[0]])
-    # vector_y = np.array([[0],[1],[0]])
-    # vector_z = np.array([[0],[0],[1]])
+    vector_y = np.array([[0],[1],[0]])
+    vector_z = np.array([[0],[0],[1]])
     vector_x = rotation_matrix_x(angle_x) @ rotation_matrix_y(angle_y) @ rotation_matrix_z(angle_z) @ vector_x
-    # vector_y = rotation_matrix_x(angle_x) @ rotation_matrix_y(angle_y) @ rotation_matrix_z(angle_z) @ vector_y
-    # vector_z = rotation_matrix_x(angle_x) @ rotation_matrix_y(angle_y) @ rotation_matrix_z(angle_z) @ vector_z
+    vector_y = rotation_matrix_x(angle_x) @ rotation_matrix_y(angle_y) @ rotation_matrix_z(angle_z) @ vector_y
+    vector_z = rotation_matrix_x(angle_x) @ rotation_matrix_y(angle_y) @ rotation_matrix_z(angle_z) @ vector_z
     vector_x_x, vector_x_y, vector_x_z = vector_x.flatten().tolist()
-    # vector_y_x, vector_y_y, vector_y_z = vector_y.flatten().tolist()
-    # vector_z_x, vector_z_y, vector_z_z = vector_z.flatten().tolist()
+    vector_y_x, vector_y_y, vector_y_z = vector_y.flatten().tolist()
+    vector_z_x, vector_z_y, vector_z_z = vector_z.flatten().tolist()
 
     ax.quiver(0, 0, 0, vector_x_x, vector_x_y, vector_x_z, color='r', label='Acceleration Vector')
-    # ax.quiver(0, 0, 0, vector_y_x, vector_y_y, vector_y_z, color='g', label='Acceleration Vector')
-    # ax.quiver(0, 0, 0, vector_z_x, vector_z_y, vector_z_z, color='b', label='Acceleration Vector')
+    ax.quiver(0, 0, 0, vector_y_x, vector_y_y, vector_y_z, color='g', label='Acceleration Vector')
+    ax.quiver(0, 0, 0, vector_z_x, vector_z_y, vector_z_z, color='b', label='Acceleration Vector')
     plt.draw()
 
 # 設置串口連接
@@ -87,15 +87,15 @@ while True:
         after_time = time.time()
         delta_time = after_time - before_time
         before_time = time.time()
-        # angle_x += delta_time*delta_angle_x
-        # angle_y += delta_time*delta_angle_y
+        angle_x += delta_time*delta_angle_x
+        angle_y += delta_time*delta_angle_y
         angle_z += delta_time*delta_angle_z
-        print(angle_x, angle_y, angle_z)
+        # print(angle_x, angle_y, angle_z)
         
         # 更新箭頭
         update_arrow(angle_x, angle_y, angle_z)
         plt.pause(0.01)
     except:
-        pass
+        continue
     
     

@@ -175,13 +175,19 @@ void loop() {
   // Serial.print(gyro.gyro.z);
   // Serial.println(" radians/s ");
   // Serial.println();
-
-  
-  Serial.print(gyro.gyro.x);
+  float x = 0;
+  float y = 0;
+  float z = 0;
+  for(int i=0;i<10;i++){
+    x += gyro.gyro.x;
+    y += gyro.gyro.y;
+    z += gyro.gyro.z + 0.01;
+  };
+  Serial.print(x/10);
   Serial.print(",");
-  Serial.print(gyro.gyro.y);
+  Serial.print(y/10);
   Serial.print(",");
-  Serial.println(gyro.gyro.z + 0.01);
+  Serial.println(z/10);
   delay(20);
 
   //  // serial plotter friendly format
