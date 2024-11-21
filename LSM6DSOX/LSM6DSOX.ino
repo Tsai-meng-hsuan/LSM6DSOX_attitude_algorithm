@@ -181,7 +181,7 @@ void loop() {
   Serial.print(",");
   Serial.print(gyro.gyro.y);
   Serial.print(",");
-  Serial.println(gyro.gyro.z);
+  Serial.println(gyro.gyro.z + 0.01);
   delay(20);
 
   //  // serial plotter friendly format
