@@ -29,24 +29,31 @@ def rotation_matrix_z(theta):
         [0, 0, 1]
     ])
 
-# 定義向量
-v = np.array([1, 0, 0])  # 在 X 軸上的單位向量
 
-# 角度，單位為弧度
-theta_x = np.pi / 4  # 45度
-theta_y = np.pi / 6  # 30度
-theta_z = np.pi / 3  # 60度
+# 更新箭頭的函數
+def update_arrow(angle_x, angle_y, angle_z):
+    ax.cla()
+    ax.set_xlim([-2, 2])
+    ax.set_ylim([-2, 2])
+    ax.set_zlim([-2, 2])
+    ax.set_xlabel('X')
+    ax.set_ylabel('Y')
+    ax.set_zlabel('Z')
 
-# 執行旋轉
-v_rotated_x = np.dot(rotation_matrix_x(theta_x), v)
-v_rotated_y = np.dot(rotation_matrix_y(theta_y), v)
-v_rotated_z = np.dot(rotation_matrix_z(theta_z), v)
+    vector_x = np.array([[1],[0],[0]])
+    # vector_y = np.array([[0],[1],[0]])
+    # vector_z = np.array([[0],[0],[1]])
+    vector_x = rotation_matrix_x(angle_x) @ rotation_matrix_y(angle_y) @ rotation_matrix_z(angle_z) @ vector_x
+    # vector_y = rotation_matrix_x(angle_x) @ rotation_matrix_y(angle_y) @ rotation_matrix_z(angle_z) @ vector_y
+    # vector_z = rotation_matrix_x(angle_x) @ rotation_matrix_y(angle_y) @ rotation_matrix_z(angle_z) @ vector_z
+    vector_x_x, vector_x_y, vector_x_z = vector_x.flatten().tolist()
+    # vector_y_x, vector_y_y, vector_y_z = vector_y.flatten().tolist()
+    # vector_z_x, vector_z_y, vector_z_z = vector_z.flatten().tolist()
 
-
-def calculate_vector(angle_x, angle_y, angle_z):
-
-    pass
-
+    ax.quiver(0, 0, 0, vector_x_x, vector_x_y, vector_x_z, color='r', label='Acceleration Vector')
+    # ax.quiver(0, 0, 0, vector_y_x, vector_y_y, vector_y_z, color='g', label='Acceleration Vector')
+    # ax.quiver(0, 0, 0, vector_z_x, vector_z_y, vector_z_z, color='b', label='Acceleration Vector')
+    plt.draw()
 
 # 設置串口連接
 ser = serial.Serial('COM8', 9600, timeout=0.1)  # 這裡根據你的設備修改串口號
@@ -63,29 +70,11 @@ ax.set_xlabel('X')
 ax.set_ylabel('Y')
 ax.set_zlabel('Z')
 
-# 更新箭頭的函數
-def update_arrow(angle_x, angle_y, angle_z):
-    ax.cla()
-    ax.set_xlim([-2, 2])
-    ax.set_ylim([-2, 2])
-    ax.set_zlim([-2, 2])
-    ax.set_xlabel('X')
-    ax.set_ylabel('Y')
-    ax.set_zlabel('Z')
-    vector_x_x, vector_x_y, vector_x_z = [1,0,0]
-    vector_y_x, vector_y_y, vector_y_z = [0,1,0]
-    vector_z_x, vector_z_y, vector_z_z = [0,0,1]
-    ax.quiver(0, 0, 0, vector_x_x, vector_x_y, vector_x_z, color='r', label='Acceleration Vector')
-    ax.quiver(0, 0, 0, vector_y_x, vector_y_y, vector_y_z, color='g', label='Acceleration Vector')
-    ax.quiver(0, 0, 0, vector_z_x, vector_z_y, vector_z_z, color='b', label='Acceleration Vector')
-    plt.draw()
-
 plt.ion()
 plt.show()
 
+
 angle_x, angle_y, angle_z = [0,0,0]
-
-
 before_time = time.time()
 while True:
     # 清除串口緩衝區
